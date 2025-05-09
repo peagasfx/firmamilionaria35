@@ -1,16 +1,16 @@
 import { Suspense } from "react"
 import { SidebarProvider } from "@/components/ui/sidebar"
-import PaymentInterface from "@/components/payment-interface"
 import AppSidebar from "@/components/app-sidebar"
+import DailySummary from "@/components/daily-summary"
 
-export default function Home() {
+export default function DailyPage() {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen bg-background">
         <AppSidebar />
         <main className="flex-1">
           <Suspense fallback={<div className="p-8">Loading...</div>}>
-            <PaymentInterface />
+            <DailySummary />
           </Suspense>
         </main>
       </div>

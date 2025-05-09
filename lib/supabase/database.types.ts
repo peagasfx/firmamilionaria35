@@ -1,0 +1,110 @@
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
+
+export interface Database {
+  public: {
+    Tables: {
+      profiles: {
+        Row: {
+          id: string
+          full_name: string | null
+          avatar_url: string | null
+          role: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          full_name?: string | null
+          avatar_url?: string | null
+          role?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          full_name?: string | null
+          avatar_url?: string | null
+          role?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      settings: {
+        Row: {
+          id: string
+          user_id: string
+          company_name: string | null
+          api_key_public: string | null
+          api_key_secret: string | null
+          webhook_url: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          company_name?: string | null
+          api_key_public?: string | null
+          api_key_secret?: string | null
+          webhook_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          company_name?: string | null
+          api_key_public?: string | null
+          api_key_secret?: string | null
+          webhook_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      transactions: {
+        Row: {
+          id: string
+          user_id: string
+          amount: number
+          status: string
+          customer_name: string | null
+          customer_email: string | null
+          customer_cpf: string | null
+          qr_code_image: string | null
+          copy_paste_code: string | null
+          created_at: string
+          paid_at: string | null
+          transaction_id: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          amount: number
+          status: string
+          customer_name?: string | null
+          customer_email?: string | null
+          customer_cpf?: string | null
+          qr_code_image?: string | null
+          copy_paste_code?: string | null
+          created_at?: string
+          paid_at?: string | null
+          transaction_id?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          amount?: number
+          status?: string
+          customer_name?: string | null
+          customer_email?: string | null
+          customer_cpf?: string | null
+          qr_code_image?: string | null
+          copy_paste_code?: string | null
+          created_at?: string
+          paid_at?: string | null
+          transaction_id?: string | null
+        }
+      }
+    }
+  }
+}
