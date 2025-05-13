@@ -46,6 +46,13 @@ export default function PaymentInterface() {
     setAmount(value)
   }
 
+  const saveTransactionToLocalStorage = (transaction: any) => {
+    const existing = JSON.parse(localStorage.getItem("pixTransactions") || "[]")
+    existing.push(transaction)
+    localStorage.setItem("pixTransactions", JSON.stringify(existing))
+  }
+
+
   const handleCopyPixCode = async () => {
     if (paymentData?.pix.qrcode) {
       try {
@@ -68,15 +75,28 @@ export default function PaymentInterface() {
     try {
       const res = await fetch(`/api/paymentStatus?transactionId=${transactionIdRef.current}`)
       const result = await res.json()
-  
+
       if (result.success && ["paid", "approved", "completed"].includes(result.status.toLowerCase())) {
         setPaymentConfirmed(true)
-  
+
         if (pollingIntervalRef.current) {
           clearInterval(pollingIntervalRef.current)
           pollingIntervalRef.current = null
         }
-  
+
+        const existing = JSON.parse(localStorage.getItem("pixTransactions") || "[]")
+        const updated = existing.map((tx: any) => {
+          if (tx.id === transactionIdRef.current) {
+            return {
+              ...tx,
+              status: "completed",
+              paidAt: new Date().toISOString(),
+            }
+          }
+          return tx
+        })
+        localStorage.setItem("pixTransactions", JSON.stringify(updated))
+
         toast({
           title: "Pagamento confirmado",
           description: "O pagamento foi confirmado com sucesso!",
@@ -123,7 +143,6 @@ export default function PaymentInterface() {
       return
     }
 
-    // Convert amount string to number, replacing comma with dot
     const amountValue = Number.parseFloat(amount.replace(",", "."))
 
     if (isNaN(amountValue) || amountValue <= 0) {
@@ -145,6 +164,14 @@ export default function PaymentInterface() {
 
       if (result.success && result.data) {
         setPaymentData(result.data)
+
+        saveTransactionToLocalStorage({
+          id: result.data.id,
+          amount: result.data.amount,
+          status: "pending",
+          createdAt: new Date().toISOString(),
+          paidAt: null,
+        })
         setQrcodeImg(`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(
                     result.data.pix.qrcode
                   )}`)

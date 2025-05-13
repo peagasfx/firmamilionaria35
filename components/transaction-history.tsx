@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -48,19 +48,19 @@ const mockTransactions = [
 
 export default function TransactionHistory() {
   const isMobile = useIsMobile()
-  const [transactions] = useState(mockTransactions)
+  const [transactions, setTransactions] = useState<any[]>([])
+
+  useEffect(() => {
+    const storedTransactions = JSON.parse(localStorage.getItem("pixTransactions") || "[]")
+    setTransactions(storedTransactions)
+  }, [])
 
   const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "completed":
-        return <CheckCircle2 className="h-5 w-5 text-green-500" />
-      case "pending":
-        return <Clock className="h-5 w-5 text-yellow-500" />
-      case "expired":
-        return <XCircle className="h-5 w-5 text-red-500" />
-      default:
-        return <Clock className="h-5 w-5 text-gray-500" />
+    if (status === "completed") {
+      return <CheckCircle2 className="h-5 w-5 text-green-500" />
     }
+
+    return <Clock className="h-5 w-5 text-yellow-500" />
   }
 
   const formatDate = (dateString: string) => {
@@ -98,19 +98,23 @@ export default function TransactionHistory() {
                 </tr>
               </thead>
               <tbody>
-                {transactions.map((tx) => (
-                  <tr key={tx.id} className="border-b hover:bg-muted/50">
-                    <td className="py-3 px-2 text-sm">{tx.id}</td>
-                    <td className="py-3 px-2">{formatDate(tx.createdAt)}</td>
-                    <td className="py-3 px-2">{formatCurrency(tx.amount / 100)}</td>
-                    <td className="py-3 px-2">
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(tx.status)}
-                        <span className="capitalize">{tx.status}</span>
-                      </div>
-                    </td>
-                    <td className="py-3 px-2">{tx.paidAt ? formatDate(tx.paidAt) : "-"}</td>
-                  </tr>
+                {transactions
+                  .filter((tx) => tx.status === "completed" || tx.status === "pending")
+                  .map((tx) => (
+                    <tr key={tx.id} className="border-b hover:bg-muted/50">
+                      <td className="py-3 px-2 text-sm">{tx.id}</td>
+                      <td className="py-3 px-2">{formatDate(tx.createdAt)}</td>
+                      <td className="py-3 px-2">{formatCurrency(tx.amount / 100)}</td>
+                      <td className="py-3 px-2">
+                        <div className="flex items-center gap-2">
+                          {getStatusIcon(tx.status)}
+                          <span className="capitalize">
+                            {tx.status === "completed" ? "Pago" : "Gerado"}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-2">{tx.paidAt ? formatDate(tx.paidAt) : "-"}</td>
+                    </tr>
                 ))}
               </tbody>
             </table>
