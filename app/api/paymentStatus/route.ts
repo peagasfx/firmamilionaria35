@@ -11,8 +11,8 @@ export async function GET(request: Request) {
     )
   }
 
-  const publicKey = "pk_YTXQ5NLgLtSkFdUgBev0iZwhUr5WTVzcAPGBdnTaxGkA6aij"
-  const secretKey = "sk_Y6CoQfzXE26gHHi6D-oPIfHHSGbddWoTjl6Y2nLiXm1hNsOp"
+  const publicKey = "pk_6kLKgkDWRNQ5vMzdZ_9HjNfbHATBLAjJt0LrUvuYvk4kipPW"
+  const secretKey = "sk_BkY_2G1vKNf4CfM1Qec_9KlbV-tcdmxbTejrtXKfwzMetBPD"
   const auth = "Basic " + Buffer.from(`${publicKey}:${secretKey}`).toString("base64")
   const url = `https://api.clyptpayments.com/v1/transactions/${transactionId}`
 
